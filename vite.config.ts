@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      common: path.resolve(__dirname, 'src/common')
+      "nested-components": path.resolve(__dirname, 'src/nested-components/'),
+      "button": path.resolve(__dirname, 'src/button/'),
     }
   }
 })
