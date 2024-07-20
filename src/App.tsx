@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ChangeEvent, useState} from "react";
 import './App.css'
 import {StudentProps} from "nested-components/common/types/StudentProps.ts";
 import {Header} from "nested-components/common/components/Header.tsx";
@@ -8,6 +8,8 @@ import {MapComponent} from "nested-components/common/components/MapComponent/Map
 import {Button} from "button/common/components/Button.tsx";
 import {HookUseState} from "button/common/components/HookUseState.tsx";
 import {Filter} from "button/common/components/Filter.tsx";
+import {FullInput} from "input/common/components/FullInput.tsx";
+import {Input} from "input/common/components/Input.tsx";
 
 function App() {
     /* nested-component */
@@ -51,6 +53,33 @@ function App() {
         console.log("I am stupid button")
     }
 
+    /* FullInput component */
+    const [message, setMessage] = useState([
+        {message: "Hello I am Ivan"},
+        {message: "Hello I am Vasiliy"},
+        {message: "Hello I am John"}
+    ])
+    const addMessage = (value: string) => {
+        const newMessage = {message: value}
+        setMessage([newMessage, ...message])
+    }
+    const messages = message.map((item, index) => {
+        return (
+            <li key={index}>
+                <span>
+                    {item.message}
+                </span>
+            </li>
+        )
+    })
+
+    /* Input component */
+    const [value, setValue] = useState("");
+    const onClickButtonHandler = () => {
+        addMessage(value)
+        setValue('')
+    }
+
     return (
         <>
             {/* nested-component */}
@@ -59,7 +88,9 @@ function App() {
             <Body title={"Body from props"}/>
             <Footer title={"Footer from props"}/>
             <MapComponent students={students}/>
+
             {/* button component */}
+            <div>Button component</div>
             <div>
                 <div style={{fontSize: "24px"}}>Button component</div>
                 <br/><br/>
@@ -88,6 +119,22 @@ function App() {
             </div>
             <div style={{marginLeft: '300px'}}>
                 <Filter/>
+            </div>
+
+            {/* FullInput component */}
+            <div>
+                <div>FullInput component</div>
+                <FullInput onChange={addMessage}/>
+            </div>
+
+            {/* Input component */}
+            <div>
+                <div>Input component</div>
+                <Input value={value} onChange={(event: string)=> setValue(event)}/>
+                <Button name="+" onClick={onClickButtonHandler}/>
+                <ul>
+                    {messages}
+                </ul>
             </div>
         </>
     )
