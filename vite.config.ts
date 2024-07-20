@@ -9,6 +9,7 @@ export default defineConfig({
     alias: {
       "nested-components": path.resolve(__dirname, 'src/nested-components/'),
       "button": path.resolve(__dirname, 'src/button/'),
+      "input": path.resolve(__dirname, 'src/input/'),
     }
   }
 })
