@@ -1,0 +1,28 @@
+.App {
+    padding: 30px;
+    display: flex;
+}
+
+.error {
+    border: red 1px solid;
+}
+
+.error-message {
+    color: red;
+}
+
+.active-filter {
+    background-color: aquamarine;
+}
+
+.is-done {
+    opacity: 0.5;
+}
+.mappedTodolist {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    margin-bottom: 50px;
+}
