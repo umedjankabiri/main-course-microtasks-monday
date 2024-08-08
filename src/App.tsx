@@ -115,6 +115,12 @@ function App() {
         const newTask = {id: v1(), title: title, isDone: false};
         setTasks({...tasks, [todolistID]: [newTask, ...tasks[todolistID]]});
     }
+    function changeStatus(todolistID: string, taskID: string, isDone: boolean) {
+        setTasks({...tasks, [todolistID]: tasks[todolistID].map(task =>
+                task.id === taskID
+                    ? {...task, isDone: isDone}
+                    : task)});
+    }
 
     const mappedTodolists = todolists.map(todolist => {
         let tasksForTodolist = tasks[todolist.TodolistID];
