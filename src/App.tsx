@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {useState} from "react";
 import './App.css'
 import {StudentProps} from "nested-components/common/types/StudentProps.ts";
 import {Header} from "nested-components/common/components/Header.tsx";
@@ -10,6 +10,10 @@ import {HookUseState} from "button/common/components/HookUseState.tsx";
 import {Filter} from "button/common/components/Filter.tsx";
 import {FullInput} from "input/common/components/FullInput.tsx";
 import {Input} from "input/common/components/Input.tsx";
+import {v1} from "uuid";
+import {FilterValuesType} from "associative-array/common/types/FilterValueProps.ts";
+import {TodolistsProps} from "associative-array/common/types/TodolistsProps.ts";
+import {Todolist} from "associative-array/common/components/Todolists.tsx";
 
 function App() {
     /* nested-component */
@@ -80,10 +84,78 @@ function App() {
         setValue('')
     }
 
+    /* Associative array */
+    let todolistID1 = v1();
+    let todolistID2 = v1();
+
+    let [todolists, setTodolists] = useState<TodolistsProps[]>([
+        {TodolistID: todolistID1, title: 'What to learn', filter: 'all'},
+        {TodolistID: todolistID2, title: 'What to buy', filter: 'all'},
+    ])
+    let [tasks, setTasks] = useState({
+        [todolistID1]: [
+            {id: v1(), title: "HTML&CSS", isDone: true},
+            {id: v1(), title: "JS", isDone: true},
+            {id: v1(), title: "ReactJS", isDone: false},
+            {id: v1(), title: "Rest API", isDone: false},
+            {id: v1(), title: "GraphQL", isDone: false},
+        ],
+        [todolistID2]: [
+            {id: v1(), title: "Books", isDone: true},
+            {id: v1(), title: "Macbook pro 16 M3 Max", isDone: true},
+            {id: v1(), title: "iPhone Pro Max 15", isDone: false},
+            {id: v1(), title: "Apple watch", isDone: false},
+            {id: v1(), title: "Airpods", isDone: false},
+        ]
+    });
+
+    function removeTask(todolistID: string, taskID: string) {
+        setTasks({...tasks, [todolistID]: tasks[todolistID].filter(task => task.id !== taskID)});
+    }
+    function addTask(todolistID: string, title: string) {
+        const newTask = {id: v1(), title: title, isDone: false};
+        setTasks({...tasks, [todolistID]: [newTask, ...tasks[todolistID]]});
+    }
+    function changeStatus(todolistID: string, taskID: string, isDone: boolean) {
+        setTasks({...tasks, [todolistID]: tasks[todolistID].map(task =>
+                task.id === taskID
+                    ? {...task, isDone: isDone}
+                    : task)});
+    }
+    function changeFilter(todolistID: string, filterValue: FilterValuesType) {
+        setTodolists(todolists.map(todolist =>
+            todolist.TodolistID === todolistID
+                ? {...todolist, filter: filterValue}
+                : todolist));
+    }
+
+    const mappedTodolists = todolists.map(todolist => {
+        let tasksForTodolist = tasks[todolist.TodolistID];
+        todolist.filter === "active" && (tasksForTodolist = tasks[todolist.TodolistID]
+            .filter(task => !task.isDone))
+        todolist.filter === "completed" && (tasksForTodolist = tasks[todolist.TodolistID]
+            .filter(task => task.isDone))
+
+        return (
+            <Todolist
+                key={todolist.TodolistID}
+                todolistID={todolist.TodolistID}
+                title={todolist.title}
+                tasks={tasksForTodolist}
+                removeTask={removeTask}
+                changeFilter={changeFilter}
+                addTask={addTask}
+                changeTaskStatus={changeStatus}
+                filter={todolist.filter}
+            />
+        )
+    })
+
     return (
         <>
             {/* nested-component */}
-            <div style={{fontSize: "24px"}}>Nested component</div><br/><br/>
+            <div style={{fontSize: "24px"}}>Nested component</div>
+            <br/><br/>
             <Header title={"Header from props"}/>
             <Body title={"Body from props"}/>
             <Footer title={"Footer from props"}/>
@@ -130,11 +202,15 @@ function App() {
             {/* Input component */}
             <div>
                 <div>Input component</div>
-                <Input value={value} onChange={(event: string)=> setValue(event)}/>
+                <Input value={value} onChange={(event: string) => setValue(event)}/>
                 <Button name="+" onClick={onClickButtonHandler}/>
                 <ul>
                     {messages}
                 </ul>
+            </div>
+            {/* Associative array */}
+            <div className={'mappedTodolist'}>
+                {mappedTodolists}
             </div>
         </>
     )
