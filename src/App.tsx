@@ -11,6 +11,7 @@ import {Filter} from "button/common/components/Filter.tsx";
 import {FullInput} from "input/common/components/FullInput.tsx";
 import {Input} from "input/common/components/Input.tsx";
 import {v1} from "uuid";
+import {FilterValuesType} from "associative-array/common/types/FilterValueProps.ts";
 import {TodolistsProps} from "associative-array/common/types/TodolistsProps.ts";
 import {Todolist} from "associative-array/common/components/Todolists.tsx";
 
@@ -120,6 +121,12 @@ function App() {
                 task.id === taskID
                     ? {...task, isDone: isDone}
                     : task)});
+    }
+    function changeFilter(todolistID: string, filterValue: FilterValuesType) {
+        setTodolists(todolists.map(todolist =>
+            todolist.TodolistID === todolistID
+                ? {...todolist, filter: filterValue}
+                : todolist));
     }
 
     const mappedTodolists = todolists.map(todolist => {
